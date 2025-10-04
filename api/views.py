@@ -141,7 +141,7 @@ class RegisterView(APIView):
             try:
                 send_mail(
                     subject='Welcome to Bodrless!',
-                    message=f'Hi {first_name or username},\n\nThank you for signing up to Bodrless. Your account has been created successfully!\n\nHappy travels!\nThe Bodrless Team',
+                    message=f"Hi {first_name or username},\n\nThank you for signing up to Bodrless. Your account has been created successfully!\n\nHappy travels!\nThe Bodrless Team",
                     from_email=None,
                     recipient_list=[email],
                     fail_silently=True,
