@@ -1,0 +1,102 @@
+# ====================
+# Python
+# ====================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pdb
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.manifest
+*.spec
+*.log
+*.pot
+
+# Virtual environments
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+../.env
+.venv
+
+# PyInstaller
+*.spec
+
+# pipenv
+Pipfile.lock
+
+# Poetry
+poetry.lock
+
+# MyPy
+.mypy_cache/
+
+# Pytest
+.pytest_cache/
+
+# Coverage
+.coverage
+htmlcov/
+.cache
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Django
+*.sqlite3
+db.sqlite3
+media/
+staticfiles/
+local_settings.py
+
+# ====================
+# JavaScript / Node.js
+# ====================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+dist/
+build/
+.cache/
+.next/
+out/
+*.tgz
+
+# ====================
+# General
+# ====================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.swn
+*.bak
+*.tmp
+*.orig
+*.~
+*.log
+
+# Editor-specific
+.vscode/
+.idea/
+*.code-workspace
+*.sublime-project
+*.sublime-workspace
+
+# ====================
+# Environment / Secrets
+# ====================
+.env
+.env.*
+.secret
+.secrets/
+credentials.json
