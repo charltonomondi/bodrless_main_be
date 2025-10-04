@@ -159,14 +159,15 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8080",
     "http://localhost:5176",
     "http://127.0.0.1:5176",
-    # Add your Netlify domain here when deployed
+    # Production domains
     "https://bodrless.netlify.app",
+    "https://bodrlessmainbe-production.up.railway.app",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
 
-# For production deployment, you might want to use specific origins only
-CORS_ALLOW_ALL_ORIGINS = False  # Set to False for production security
+# For development, allow all origins to avoid CORS issues
+CORS_ALLOW_ALL_ORIGINS = True  # Temporarily allow all for debugging
 CORS_ALLOW_HEADERS = [
     'accept',
     'accept-encoding',
