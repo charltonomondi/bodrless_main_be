@@ -1,0 +1,50 @@
+services:
+  - type: web
+    name: bodrless-backend
+    env: docker
+    plan: free
+
+    envVars:
+      - key: ENV
+        value: production
+      - key: DEBUG
+        value: False
+      - key: SECRET_KEY
+        value: django-insecure-ju(r-3j^0=02x(+v+trrqf@p8ziw^b1ujpj9#e+8(x&l1-3rzd
+      - key: PORT
+        generateValue: true
+      - key: ALLOWED_HOSTS
+        value: .onrender.com,localhost,127.0.0.1,bodrless.netlify.app
+      - key: DATABASE_URL
+        fromDatabase:
+          name: bodrless-db
+          property: connectionString
+      - key: DB_NAME
+        value: bodrless_db
+      - key: DB_USER
+        value: bodrless_db_user
+      - key: DB_PASSWORD
+        value: 2iz4viQHDOZNSwKRspgbfBqayATqcCwI
+      - key: DB_HOST
+        value: dpg-d3gh5uggjchc739p2ao0-a.oregon-postgres.render.com
+      - key: DB_PORT
+        value: 5432
+      - key: TRAVELDUQA_API_KEY
+        value: travelduqa_test_b5e10a61521a6f47fb8c1783edd3437e81fa1764336eccf392f4a14fa095747924949ec6df991ce10d5aaa846caa14c0e58d84713b2b
+      - key: MISTRAL_API_KEY
+        value: 3SxOSIVbsjtURmROGJDiaId0SPIbiLWN
+      - key: INTASEND_API_KEY
+        value: ISSecretKey_live_700406e6-ce42-4033-8b61-57ba09ee522d
+      - key: INTASEND_PUBLISHABLE_KEY
+        value: ISPubKey_live_159a80fc-7935-4e86-a23e-f279cf75d81d
+      - key: INTASEND_ENABLED
+        value: true
+      - key: SERVER_PASSWORD
+        value: Jf?Bg9Rj
+
+databases:
+  - name: bodrless-db
+    plan: free
+    databaseName: bodrless_db
+    user: bodrless_db_user
+    region: oregon
