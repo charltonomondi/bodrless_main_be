@@ -88,23 +88,28 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', 'bodrless_db'),
-        'USER': os.getenv('DB_USER', 'postgres'),
-        'PASSWORD': os.getenv('DB_PASSWORD', 'Catchmeifyoucan'),
-        'HOST': os.getenv('DB_HOST', '127.0.0.1'),
-        'PORT': os.getenv('DB_PORT', '5432'),
-    }
-}
-
 import dj_database_url
 
+# Use DATABASE_URL if available (Render), otherwise fallback to individual env vars
 DATABASE_URL = os.getenv('DATABASE_URL')
 
 if DATABASE_URL:
-    DATABASES['default'] = dj_database_url.parse(DATABASE_URL)
+    # Use Render's DATABASE_URL
+    DATABASES = {
+        'default': dj_database_url.parse(DATABASE_URL)
+    }
+else:
+    # Fallback to individual environment variables (for local development)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('DB_NAME', 'bodrless_db'),
+            'USER': os.getenv('DB_USER', 'postgres'),
+            'PASSWORD': os.getenv('DB_PASSWORD', 'Catchmeifyoucan'),
+            'HOST': os.getenv('DB_HOST', '127.0.0.1'),
+            'PORT': os.getenv('DB_PORT', '5432'),
+        }
+    }
 
 
 
@@ -237,3 +242,18 @@ try:
     from .email_settings import *
 except ImportError:
     pass
+
+
+# Health check endpoint that doesn't require database
+def health_check():
+    """
+    Simple health check that doesn't require database access.
+    Returns True if the application is running properly.
+    """
+    return {
+        'status': 'healthy',
+        'service': 'Bodrless Django API',
+        'version': '1.0.0',
+        'database_configured': DATABASE_URL is not None,
+        'debug_mode': DEBUG,
+    }
