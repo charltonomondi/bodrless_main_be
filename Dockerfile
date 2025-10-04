@@ -26,4 +26,4 @@ USER django
 EXPOSE 8000
 
 # Run Django migrations and start server
-CMD ["sh", "-c", "python manage.py migrate && gunicorn --bind 0.0.0.0:${PORT:-8000} --chdir bodrless-be config.wsgi:application"]
+CMD ["sh", "-c", "python manage.py migrate && gunicorn --bind 0.0.0.0:${PORT:-8000} config.wsgi:application"]
