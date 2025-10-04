@@ -93,13 +93,37 @@ import dj_database_url
 # Use DATABASE_URL if available (Render), otherwise fallback to individual env vars
 DATABASE_URL = os.getenv('DATABASE_URL')
 
-if DATABASE_URL:
+# Debug logging for database configuration
+import logging
+logger = logging.getLogger(__name__)
+logger.info(f"DATABASE_URL from environment: {DATABASE_URL}")
+logger.info(f"DATABASE_URL is None: {DATABASE_URL is None}")
+logger.info(f"DATABASE_URL length: {len(DATABASE_URL) if DATABASE_URL else 0}")
+
+if DATABASE_URL and len(DATABASE_URL) > 0:
     # Use Render's DATABASE_URL
-    DATABASES = {
-        'default': dj_database_url.parse(DATABASE_URL)
-    }
+    logger.info("Using DATABASE_URL for database configuration")
+    try:
+        DATABASES = {
+            'default': dj_database_url.parse(DATABASE_URL)
+        }
+        logger.info(f"Parsed database config: {DATABASES['default']}")
+    except Exception as e:
+        logger.error(f"Error parsing DATABASE_URL: {e}")
+        logger.info("Falling back to individual environment variables")
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': os.getenv('DB_NAME', 'bodrless_db'),
+                'USER': os.getenv('DB_USER', 'postgres'),
+                'PASSWORD': os.getenv('DB_PASSWORD', 'Catchmeifyoucan'),
+                'HOST': os.getenv('DB_HOST', '127.0.0.1'),
+                'PORT': os.getenv('DB_PORT', '5432'),
+            }
+        }
 else:
     # Fallback to individual environment variables (for local development)
+    logger.info("DATABASE_URL not available, using individual environment variables")
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',

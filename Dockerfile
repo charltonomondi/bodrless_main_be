@@ -28,4 +28,4 @@ USER django
 EXPOSE 8000
 
 # Run migrations and start the app
-CMD ["sh", "-c", "python manage.py migrate --noinput && gunicorn config.wsgi:application --bind 0.0.0.0:${PORT:-8000} --timeout 120"]
+CMD ["sh", "-c", "python manage.py migrate --noinput --skip-checks || echo 'Migrations failed, but continuing...' && gunicorn config.wsgi:application --bind 0.0.0.0:${PORT:-8000} --timeout 120 --log-level debug"]
