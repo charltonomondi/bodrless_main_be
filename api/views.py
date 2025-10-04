@@ -1162,7 +1162,7 @@ class ChatView(APIView):
                                 try:
                                     send_mail(
                                         subject='Welcome to Bodrless!',
-                                        message=f'Hi {signup_data['first_name'] or signup_data['username']},\n\nThank you for signing up to Bodrless. Your account has been created successfully!\n\nHappy travels!\nThe Bodrless Team',
+                                        message=f"Hi {signup_data['first_name'] or signup_data['username']},\n\nThank you for signing up to Bodrless. Your account has been created successfully!\n\nHappy travels!\nThe Bodrless Team",
                                         from_email=None,
                                         recipient_list=[signup_data['email']],
                                         fail_silently=True,
