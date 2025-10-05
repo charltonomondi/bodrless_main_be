@@ -222,10 +222,25 @@ class LoginView(APIView):
                     logger.info(f"Found user by email: {username} -> {actual_username}")
                 except User.DoesNotExist:
                     logger.warning(f"No user found with email: {username}")
-                    return Response({
-                        'error': 'Invalid credentials',
-                        'details': 'No account found with this email address'
-                    }, status=401)
+                    # Check if user exists with different email case or try username fallback
+                    try:
+                        # Try case-insensitive email search
+                        user_obj = User.objects.filter(email__iexact=username).first()
+                        if user_obj:
+                            actual_username = user_obj.username
+                            logger.info(f"Found user by case-insensitive email: {username} -> {actual_username}")
+                        else:
+                            logger.warning(f"No user found with email (case-insensitive): {username}")
+                            return Response({
+                                'error': 'Invalid credentials',
+                                'details': 'No account found with this email address'
+                            }, status=401)
+                    except Exception as e:
+                        logger.error(f"Error during case-insensitive email search: {e}")
+                        return Response({
+                            'error': 'Invalid credentials',
+                            'details': 'No account found with this email address'
+                        }, status=401)
             else:
                 # Use provided username directly
                 actual_username = username
