@@ -199,7 +199,40 @@ class LoginView(APIView):
                     'details': 'Please provide both username and password'
                 }, status=400)
 
-            user = authenticate(username=username, password=password)
+            # Check if the provided credential is an email address
+            from django.core.validators import validate_email
+            from django.core.exceptions import ValidationError
+
+            try:
+                validate_email(username)
+                # If email validation passes, it's an email address
+                is_email = True
+                logger.info(f"Email login attempt: {username}")
+            except ValidationError:
+                # If validation fails, it's a username
+                is_email = False
+                logger.info(f"Username login attempt: {username}")
+
+            # Find the actual username for authentication
+            if is_email:
+                # Try to find user by email
+                try:
+                    user_obj = User.objects.get(email=username)
+                    actual_username = user_obj.username
+                    logger.info(f"Found user by email: {username} -> {actual_username}")
+                except User.DoesNotExist:
+                    logger.warning(f"No user found with email: {username}")
+                    return Response({
+                        'error': 'Invalid credentials',
+                        'details': 'No account found with this email address'
+                    }, status=401)
+            else:
+                # Use provided username directly
+                actual_username = username
+                logger.info(f"Using username directly: {actual_username}")
+
+            # Authenticate with the actual username
+            user = authenticate(username=actual_username, password=password)
 
             if user is not None:
                 logger.info(f"✅ Authentication successful for user: {username}")
