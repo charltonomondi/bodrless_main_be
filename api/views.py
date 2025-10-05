@@ -137,17 +137,64 @@ class RegisterView(APIView):
             # Create user profile
             UserProfile.objects.create(user=user)
 
-            # Send welcome email
+            # Send welcome email asynchronously (don't wait for it)
             try:
-                send_mail(
-                    subject='Welcome to Bodrless!',
-                    message=f"Hi {first_name or username},\n\nThank you for signing up to Bodrless. Your account has been created successfully!\n\nHappy travels!\nThe Bodrless Team",
-                    from_email=None,
-                    recipient_list=[email],
-                    fail_silently=True,
-                )
+                from django.core.mail import EmailMultiAlternatives
+                from django.template.loader import render_to_string
+                from django.utils.html import strip_tags
+
+                # Create the email in background - don't wait for it
+                import threading
+
+                def send_welcome_email():
+                    try:
+                        subject = 'Welcome to Bodrless!'
+                        html_content = f"""
+                        <html>
+                        <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                            <div style="background: linear-gradient(135deg, #f59e0b, #f97316); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+                                <h1 style="margin: 0;">🎉 Welcome to Bodrless!</h1>
+                            </div>
+                            <div style="background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px;">
+                                <h2 style="color: #1e293b;">Hi {first_name or username}!</h2>
+                                <p style="color: #475569; font-size: 16px; line-height: 1.6;">
+                                    Thank you for signing up to Bodrless. Your account has been created successfully!
+                                </p>
+                                <p style="color: #475569; font-size: 16px; line-height: 1.6;">
+                                    You can now book flights, hotels, and plan your perfect trip with us.
+                                </p>
+                                <div style="text-align: center; margin: 30px 0;">
+                                    <a href="https://bodrless.netlify.app" style="background: linear-gradient(135deg, #f59e0b, #f97316); color: white; padding: 12px 30px; text-decoration: none; border-radius: 25px; font-weight: bold;">Start Planning Your Trip</a>
+                                </div>
+                                <p style="color: #64748b; font-size: 14px;">
+                                    Happy travels!<br>
+                                    The Bodrless Team
+                                </p>
+                            </div>
+                        </body>
+                        </html>
+                        """
+
+                        text_content = strip_tags(html_content)
+                        email_message = EmailMultiAlternatives(
+                            subject=subject,
+                            body=text_content,
+                            from_email=None,
+                            to=[email]
+                        )
+                        email_message.attach_alternative(html_content, "text/html")
+                        email_message.send(fail_silently=True)
+                        logger.info(f"Welcome email sent to {email}")
+                    except Exception as e:
+                        logger.warning(f"Failed to send welcome email: {e}")
+
+                # Send email in background thread
+                email_thread = threading.Thread(target=send_welcome_email)
+                email_thread.daemon = True
+                email_thread.start()
+
             except Exception as e:
-                logger.warning(f"Failed to send welcome email: {e}")
+                logger.warning(f"Failed to start welcome email thread: {e}")
 
             # Create token
             token, created = Token.objects.get_or_create(user=user)
