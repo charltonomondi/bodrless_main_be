@@ -203,8 +203,9 @@ CORS_ALLOWED_ORIGINS = [
 
 CORS_ALLOW_CREDENTIALS = True
 
-# For development, allow all origins to avoid CORS issues
-# CORS_ALLOW_ALL_ORIGINS = True  # Temporarily allow all for debugging
+# Additional CORS settings for better compatibility
+CORS_ALLOW_ALL_ORIGINS = False  # Keep False for security
+
 CORS_ALLOW_HEADERS = [
     'accept',
     'accept-encoding',
@@ -215,6 +216,10 @@ CORS_ALLOW_HEADERS = [
     'user-agent',
     'x-csrftoken',
     'x-requested-with',
+    'x-forwarded-proto',
+    'cache-control',
+    'pragma',
+    'expires',
 ]
 
 CORS_ALLOW_METHODS = [
@@ -225,6 +230,15 @@ CORS_ALLOW_METHODS = [
     'POST',
     'PUT',
 ]
+
+# Additional CORS settings for better browser compatibility
+CORS_EXPOSE_HEADERS = [
+    'content-type',
+    'authorization',
+    'x-request-id',
+]
+
+CORS_PREFLIGHT_MAX_AGE = 86400  # Cache preflight for 24 hours
 
 # REST Framework settings
 REST_FRAMEWORK = {
